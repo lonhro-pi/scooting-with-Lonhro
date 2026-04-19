@@ -233,7 +233,7 @@ export default function Home() {
         <section className="grid gap-10 lg:grid-cols-[1.25fr_0.9fr] lg:items-center">
           <div className="space-y-6">
             <p className="inline-flex items-center rounded-full border border-pink-400/40 bg-pink-500/10 px-4 py-1 text-sm font-semibold text-pink-300">
-              Matte black core. Deep pink precision.
+              Built with Lonhro precision.
             </p>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
               Scooting with Lonhro Control Suite
