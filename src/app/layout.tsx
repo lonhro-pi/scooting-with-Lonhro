@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Scooting with Lonhro",
   description:
-    "A modern launchpad for city rides, route planning, and rider community.",
+    "Deep-pink and matte-black control center for scooter software and firmware tuning.",
 };
 
 export default function RootLayout({

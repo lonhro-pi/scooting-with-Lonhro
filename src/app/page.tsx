@@ -1,68 +1,68 @@
 export default function Home() {
   const highlights = [
     {
-      title: "Smooth Fleet",
-      copy: "High-performance scooters with reliable range, quick charge cycles, and premium comfort.",
+      title: "Firmware Studio",
+      copy: "Build, validate, and deploy signed firmware packs with staged release channels for each scooter family.",
     },
     {
-      title: "City Route IQ",
-      copy: "Smart route planning balances terrain, traffic, and battery to keep every ride efficient.",
+      title: "Scooter Profile Manager",
+      copy: "Tune acceleration maps, battery curves, and braking behavior through profile templates and one-click presets.",
     },
     {
-      title: "Rider Community",
-      copy: "Track milestones, join city challenges, and ride with the Lonhro squad every weekend.",
+      title: "Diagnostics + Recovery",
+      copy: "Run health scans, compare controller logs, and trigger safe rollback snapshots when firmware checks fail.",
     },
   ];
 
   return (
     <div className="flex flex-1 justify-center px-6 py-10 md:px-10 md:py-14">
-      <main className="w-full max-w-6xl rounded-3xl border border-white/10 bg-white/95 p-8 shadow-[0_30px_90px_rgba(15,23,42,0.2)] backdrop-blur md:p-12">
+      <main className="w-full max-w-6xl rounded-3xl border border-pink-400/20 bg-zinc-950/95 p-8 text-zinc-100 shadow-[0_35px_90px_rgba(236,72,153,0.18)] backdrop-blur md:p-12">
         <section className="grid gap-10 lg:grid-cols-[1.25fr_0.9fr] lg:items-center">
           <div className="space-y-6">
-            <p className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-4 py-1 text-sm font-semibold text-sky-700">
-              Urban mobility, elevated.
+            <p className="inline-flex items-center rounded-full border border-pink-400/40 bg-pink-500/10 px-4 py-1 text-sm font-semibold text-pink-300">
+              Matte black core. Deep pink precision.
             </p>
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-              Scooting with Lonhro
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
+              Scooting with Lonhro Control Suite
             </h1>
-            <p className="max-w-xl text-lg leading-8 text-slate-600">
-              Premium city scooting built for speed, style, and smart planning.
-              Launch rides in seconds, discover scenic routes, and unlock
-              community-powered momentum.
+            <p className="max-w-xl text-lg leading-8 text-zinc-300">
+              Engineer your fleet stack with firmware orchestration, performance
+              profile switching, and maintenance-grade diagnostics inspired by
+              modern scooter utility workflows.
             </p>
             <div className="flex flex-wrap gap-4">
               <a
                 href="#features"
-                className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+                className="rounded-xl bg-pink-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-pink-500"
               >
-                Explore Features
+                Open Utility Roadmap
               </a>
               <a
                 href="#launch"
-                className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-700"
+                className="rounded-xl border border-zinc-600 bg-zinc-900 px-6 py-3 text-sm font-semibold text-zinc-100 transition hover:border-pink-400 hover:text-pink-300"
               >
-                Start Your Ride
+                Request Beta Access
               </a>
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-700 p-6 text-white shadow-xl">
-            <h2 className="text-lg font-semibold">Today&apos;s Ride Snapshot</h2>
+          <div className="rounded-2xl border border-pink-400/30 bg-gradient-to-br from-zinc-950 via-zinc-900 to-pink-800 p-6 text-white shadow-xl">
+            <h2 className="text-lg font-semibold">Live Firmware Operations</h2>
             <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-slate-200">Live scooters</p>
-                <p className="mt-2 text-2xl font-bold">128</p>
+                <p className="text-zinc-200">Supported profiles</p>
+                <p className="mt-2 text-2xl font-bold">34</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-slate-200">Avg. range</p>
-                <p className="mt-2 text-2xl font-bold">42 km</p>
+                <p className="text-zinc-200">Firmware channels</p>
+                <p className="mt-2 text-2xl font-bold">6</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-slate-200">Active riders</p>
-                <p className="mt-2 text-2xl font-bold">3.7k</p>
+                <p className="text-zinc-200">Rollback snapshots</p>
+                <p className="mt-2 text-2xl font-bold">1,482</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-slate-200">Battery health</p>
-                <p className="mt-2 text-2xl font-bold">97%</p>
+                <p className="text-zinc-200">Telemetry uptime</p>
+                <p className="mt-2 text-2xl font-bold">99.98%</p>
               </div>
             </div>
           </div>
@@ -72,34 +72,37 @@ export default function Home() {
           {highlights.map((item) => (
             <article
               key={item.title}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-6 shadow-sm"
             >
-              <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{item.copy}</p>
+              <h3 className="text-lg font-semibold text-pink-300">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-zinc-300">{item.copy}</p>
             </article>
           ))}
         </section>
 
         <section
           id="launch"
-          className="mt-14 rounded-2xl border border-sky-200 bg-sky-50 p-7 md:flex md:items-center md:justify-between"
+          className="mt-14 rounded-2xl border border-pink-400/30 bg-zinc-900 p-7 md:flex md:items-center md:justify-between"
         >
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Ready to roll?</h2>
-            <p className="mt-2 text-slate-600">
-              Create your rider profile and unlock your first Lonhro route.
+            <h2 className="text-2xl font-bold text-white">
+              Build your scooter utility stack
+            </h2>
+            <p className="mt-2 text-zinc-300">
+              Join the early group for secure firmware tooling, profile control,
+              and advanced diagnostics in one Lonhro console.
             </p>
           </div>
           <button
             type="button"
-            className="mt-5 rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500 md:mt-0"
+            className="mt-5 rounded-xl bg-pink-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-pink-500 md:mt-0"
           >
-            Join the Launch List
+            Join Firmware Beta
           </button>
         </section>
 
-        <div className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-500">
-          Built with velocity by Lonhro Labs.
+        <div className="mt-10 border-t border-zinc-800 pt-6 text-sm text-zinc-400">
+          Built by Lonhro Labs for next-generation scooter utility software.
         </div>
       </main>
     </div>
