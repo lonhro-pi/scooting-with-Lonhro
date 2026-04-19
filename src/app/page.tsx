@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { FleetHealthResponse, TelemetryLatestResponse } from "@/types/telemetry";
 
 const initialBatteries = [
   { id: "Battery-1", cycles: 84, sag: "2.1%" },
@@ -37,6 +38,10 @@ export default function Home() {
   const [lastSyncAt, setLastSyncAt] = useState("Not synced yet");
   const [heartbeatStatus, setHeartbeatStatus] = useState<"healthy" | "warning">("healthy");
   const [lastHeartbeat, setLastHeartbeat] = useState("00:00:00");
+  const [telemetryMode, setTelemetryMode] = useState<"live" | "fallback">("fallback");
+  const [telemetryDeviceId, setTelemetryDeviceId] = useState("unknown-device");
+  const [telemetryUpdatedAt, setTelemetryUpdatedAt] = useState("n/a");
+  const [fleetHealthSource, setFleetHealthSource] = useState<"live" | "fallback">("fallback");
 
   const alreadyPresent = [
     "Encrypted BLE + UART links are already included.",
@@ -227,6 +232,61 @@ export default function Home() {
     setTerminalInput("");
   };
 
+  useEffect(() => {
+    let active = true;
+    const fetchLatest = async () => {
+      try {
+        const response = await fetch("/api/telemetry/latest", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+        const data: TelemetryLatestResponse = await response.json();
+        if (!active || data.mode !== "live") {
+          return;
+        }
+        setTelemetryMode("live");
+        setTelemetryDeviceId(data.data.deviceId);
+        setTelemetryUpdatedAt(new Date(data.data.timestamp).toLocaleTimeString());
+      } catch {
+        // Keep fallback mode without interrupting UI.
+      }
+    };
+    fetchLatest();
+    const timer = window.setInterval(fetchLatest, 4000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const fetchFleetHealth = async () => {
+      try {
+        const response = await fetch("/api/telemetry/fleet-health", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+        const data: FleetHealthResponse = await response.json();
+        if (!active || data.mode !== "live") {
+          return;
+        }
+        setFleetHealthSource("live");
+        if (Array.isArray(data.flaggedBatteries) && data.flaggedBatteries.length > 0) {
+          setBatteryLog(data.flaggedBatteries);
+        }
+      } catch {
+        // Keep fallback values if API is unavailable.
+      }
+    };
+    fetchFleetHealth();
+    const timer = window.setInterval(fetchFleetHealth, 10000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
+
   return (
     <div className="flex flex-1 justify-center px-6 py-10 md:px-10 md:py-14">
       <main className="w-full max-w-6xl rounded-3xl border border-pink-400/20 bg-zinc-950/95 p-8 text-zinc-100 shadow-[0_35px_90px_rgba(236,72,153,0.18)] backdrop-blur md:p-12">
@@ -277,6 +337,13 @@ export default function Home() {
                 <p className="mt-2 text-lg font-bold">{terminalOutput.length}</p>
               </div>
             </div>
+            <p className="mt-4 text-xs text-zinc-300">
+              Telemetry mode:{" "}
+              <span className={telemetryMode === "live" ? "text-emerald-300" : "text-amber-300"}>
+                {telemetryMode === "live" ? "Live Influx feed" : "Fallback simulation"}
+              </span>{" "}
+              • Device: {telemetryDeviceId} • Updated: {telemetryUpdatedAt}
+            </p>
           </div>
         </section>
 
@@ -404,6 +471,9 @@ export default function Home() {
                 <p className="text-sm text-zinc-200">
                   Fleet Health Alerts: {flaggedBatteries.length} battery
                   {flaggedBatteries.length === 1 ? "" : "ies"} flagged for elevated sag.
+                </p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Source: {fleetHealthSource === "live" ? "Influx-backed API" : "Local fallback model"}
                 </p>
                 <ul className="mt-2 grid gap-1 text-xs text-zinc-400">
                   {flaggedBatteries.map((battery) => (
