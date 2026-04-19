@@ -24,6 +24,28 @@ export default function Home() {
     "Always on tail light: force the tail light to remain ON.",
   ];
 
+  const powerLimitNotes = [
+    "Standard presets: Sports 25A, Drive 14A, Eco 8A (Auto profiles supported).",
+    "Higher values increase power output, but excessive power is not recommended for battery or motor lifespan.",
+    "Power limit does not directly change top speed.",
+    "This value applies at full battery voltage; the scooter may draw more current at lower voltage to compensate.",
+    "Tested values were validated on stock battery voltage, but you should still consider ambient temperature, part variance, and battery modifications.",
+    "System Voltage is for estimated draw display only and does not patch firmware.",
+    "Estimated draw in Sports mode: nominal 350W, peak 700W.",
+  ];
+
+  const currentLimitNotes = [
+    "Standard presets: Sports 55A, Drive 28A, Eco 16A.",
+    "Higher values increase power output, but too much current is not recommended for battery or motor lifespan.",
+    "Current limit is the hard cap for draw. The scooter should not draw above the configured value.",
+  ];
+
+  const speedProfiles = [
+    "US region - Sports 33 km/h",
+    "EU region - Sports / US region - Drive 27 km/h",
+    "DE region - Sports / EU region - Drive 22 km/h",
+  ];
+
   return (
     <div className="flex flex-1 justify-center px-6 py-10 md:px-10 md:py-14">
       <main className="w-full max-w-6xl rounded-3xl border border-pink-400/20 bg-zinc-950/95 p-8 text-zinc-100 shadow-[0_35px_90px_rgba(236,72,153,0.18)] backdrop-blur md:p-12">
@@ -118,6 +140,80 @@ export default function Home() {
               <li key={feature}>• {feature}</li>
             ))}
           </ul>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Performance Tuning Panel</h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">Power limit</h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                Standard: 25A / 14A / Auto
+              </p>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                {powerLimitNotes.map((note) => (
+                  <li key={note}>• {note}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">Current limit</h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                Standard: 55A / 28A / 16A
+              </p>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                {currentLimitNotes.map((note) => (
+                  <li key={note}>• {note}</li>
+                ))}
+              </ul>
+            </article>
+          </div>
+
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">Max speed</h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                The scooter stays below configured max speed (add +1 to actually
+                drive at the exact target speed).
+              </p>
+              <p className="mt-3 text-sm text-zinc-300">
+                With stock battery voltage (36-42V), top speed typically caps
+                near 33 km/h at full charge.
+              </p>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                {speedProfiles.map((profile) => (
+                  <li key={profile}>• {profile}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">
+                Direct power control (DPC)
+              </h3>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                <li>
+                  • Curve type (DPC only): throttle follows a power-based
+                  algorithm similar to thermal engine behavior.
+                </li>
+                <li>
+                  • Warning: speed limit is ignored while DPC is active.
+                </li>
+                <li>
+                  • Current raising coefficient controls how quickly current is
+                  applied for speed-based throttle response.
+                </li>
+                <li>
+                  • Current raising coefficient is ignored while using DPC.
+                </li>
+                <li>
+                  • Motor Start Speed defines the minimum speed in km/h before
+                  motor engagement.
+                </li>
+              </ul>
+            </article>
+          </div>
         </section>
 
         <section
