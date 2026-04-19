@@ -1,16 +1,16 @@
 export default function Home() {
   const highlights = [
     {
-      title: "Firmware Studio",
-      copy: "Build, validate, and deploy signed firmware packs with staged release channels for each scooter family.",
+      title: "Firmware Modification (SHFW)",
+      copy: "Tune field weakening, performance behavior, and ride parameters from one secure firmware control workspace.",
     },
     {
-      title: "Scooter Profile Manager",
-      copy: "Tune acceleration maps, battery curves, and braking behavior through profile templates and one-click presets.",
+      title: "Encrypted Links (BLE + UART)",
+      copy: "Connect through encrypted BLE and UART channels so firmware operations and live commands stay controlled and stable.",
     },
     {
-      title: "Diagnostics + Recovery",
-      copy: "Run health scans, compare controller logs, and trigger safe rollback snapshots when firmware checks fail.",
+      title: "Xiaomi + Ninebot Compatibility",
+      copy: "Support Max, SNSC, ESx, M365, and M365 Pro families while exposing battery telemetry and scooter diagnostics.",
     },
   ];
 
@@ -26,9 +26,9 @@ export default function Home() {
               Scooting with Lonhro Control Suite
             </h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-300">
-              Engineer your fleet stack with firmware orchestration, performance
-              profile switching, and maintenance-grade diagnostics inspired by
-              modern scooter utility workflows.
+              Engineer your fleet stack with SHFW firmware modification tools,
+              encrypted links, and maintenance-grade diagnostics inspired by
+              advanced scooter utility workflows.
             </p>
             <div className="flex flex-wrap gap-4">
               <a
@@ -49,20 +49,20 @@ export default function Home() {
             <h2 className="text-lg font-semibold">Live Firmware Operations</h2>
             <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-zinc-200">Supported profiles</p>
-                <p className="mt-2 text-2xl font-bold">34</p>
+                <p className="text-zinc-200">Firmware uploads</p>
+                <p className="mt-2 text-2xl font-bold">Ready</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-zinc-200">Firmware channels</p>
-                <p className="mt-2 text-2xl font-bold">6</p>
+                <p className="text-zinc-200">Safe mode</p>
+                <p className="mt-2 text-2xl font-bold">Ninebot</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-zinc-200">Rollback snapshots</p>
-                <p className="mt-2 text-2xl font-bold">1,482</p>
+                <p className="text-zinc-200">Raw command path</p>
+                <p className="mt-2 text-2xl font-bold">Enabled</p>
               </div>
               <div className="rounded-xl bg-white/10 p-4">
-                <p className="text-zinc-200">Telemetry uptime</p>
-                <p className="mt-2 text-2xl font-bold">99.98%</p>
+                <p className="text-zinc-200">Serial updates</p>
+                <p className="mt-2 text-2xl font-bold">ESC + BMS</p>
               </div>
             </div>
           </div>
@@ -80,6 +80,25 @@ export default function Home() {
           ))}
         </section>
 
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Firmware Utility Stack</h2>
+          <ul className="mt-4 grid gap-3 text-sm leading-7 text-zinc-300 md:grid-cols-2">
+            <li>• Upload firmware with guided compatibility checks.</li>
+            <li>• Change serial numbers on ESC and BMS controllers.</li>
+            <li>• Send commands with a simple UI or raw calculated packets.</li>
+            <li>
+              • Safe-mode blocks wrong firmware targets on Ninebot vehicles.
+            </li>
+            <li>
+              • Real-time battery and scooter output for diagnostics sessions.
+            </li>
+            <li>
+              • Built for Xiaomi-Ninebot platforms: Max, SNSC, ESx, M365,
+              M365 Pro.
+            </li>
+          </ul>
+        </section>
+
         <section
           id="launch"
           className="mt-14 rounded-2xl border border-pink-400/30 bg-zinc-900 p-7 md:flex md:items-center md:justify-between"
@@ -89,8 +108,8 @@ export default function Home() {
               Build your scooter utility stack
             </h2>
             <p className="mt-2 text-zinc-300">
-              Join the early group for secure firmware tooling, profile control,
-              and advanced diagnostics in one Lonhro console.
+              Join the early group for SHFW firmware modding, secure links, and
+              command-level control in one Lonhro console.
             </p>
           </div>
           <button
