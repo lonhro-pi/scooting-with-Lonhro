@@ -15,29 +15,29 @@ export default function Home() {
   ];
 
   const controlFeatures = [
-    "Change Region: change serial number for the connected vehicle.",
-    "Commands: act on registers to enable KERS, DPC, lock, reboot, and more.",
-    "Automate: send a user-specified command on connection (for example, DPC register activation).",
-    "Lock: keep scooter in always-on mode while ebrake is applied to discourage theft.",
-    "Cruise Control: activate time-delayed cruise control when firmware permits it.",
-    "Direct power control (DPC): activate DPC register mode for switchable register or switchable brake firmware options.",
-    "Always on tail light: force the tail light to remain ON.",
+    "Region Switch lets you remap the active vehicle profile and rewrite serial identity for connected controllers.",
+    "Command Console gives direct register actions for KERS, DPC, lock state, reboot, and additional low-level toggles.",
+    "Auto-Run can trigger a selected startup command on connect, such as immediate DPC register enablement.",
+    "Security Lock keeps the scooter in powered lock state and applies e-brake pressure to reduce theft risk.",
+    "Cruise Assist enables delayed cruise engagement when the installed firmware configuration allows it.",
+    "DPC Register Mode supports switchable register and switchable brake variants for firmware-ready builds.",
+    "Tail Light Persistent mode keeps rear lighting continuously active for high-visibility sessions.",
   ];
 
   const powerLimitNotes = [
-    "Standard presets: Sports 25A, Drive 14A, Eco 8A (Auto profiles supported).",
-    "Higher values increase power output, but excessive power is not recommended for battery or motor lifespan.",
-    "Power limit does not directly change top speed.",
-    "This value applies at full battery voltage; the scooter may draw more current at lower voltage to compensate.",
-    "Tested values were validated on stock battery voltage, but you should still consider ambient temperature, part variance, and battery modifications.",
-    "System Voltage is for estimated draw display only and does not patch firmware.",
-    "Estimated draw in Sports mode: nominal 350W, peak 700W.",
+    "Reference profiles: Sport 25A, Drive 14A, Eco 8A, with adaptive auto-profile support.",
+    "Increasing this value raises acceleration output, but aggressive settings can shorten battery and motor service life.",
+    "Power limit calibration shapes torque behavior and does not directly set final top speed.",
+    "Limits are calculated at full battery voltage. At lower voltage, current draw may rise to maintain requested power.",
+    "Validated values come from stock voltage testing, but heat, component variance, and battery mods still change safe margins.",
+    "System Voltage is display-side estimation only and does not write a firmware patch.",
+    "Sport-mode draw estimate: ~350W nominal and ~700W burst peak.",
   ];
 
   const currentLimitNotes = [
-    "Standard presets: Sports 55A, Drive 28A, Eco 16A.",
-    "Higher values increase power output, but too much current is not recommended for battery or motor lifespan.",
-    "Current limit is the hard cap for draw. The scooter should not draw above the configured value.",
+    "Reference profiles: Sport 55A, Drive 28A, Eco 16A.",
+    "Higher current limits deliver stronger response, but sustained high values can increase thermal and battery wear.",
+    "This parameter acts as the hard draw ceiling for the controller path.",
   ];
 
   const speedProfiles = [
@@ -47,11 +47,11 @@ export default function Home() {
   ];
 
   const brakeNotes = [
-    "Brake lever params standard: Lever virtual limit 120, minimum phase current 6A, maximum phase current 35A.",
-    "KERS Min Speed default: 6 km/h (configurable range 0-10 km/h).",
-    "When set to 0 km/h, scooter does not auto-brake while motor is inactive; brake lever recuperation remains available (clonk-free).",
-    "Current raising coefficient controls how quickly brake current is applied and affects brake response ramp.",
-    "Brake light mode and brake light flash frequency are configurable behavior outputs.",
+    "Brake lever baseline ships with virtual limit 120, minimum phase current 6A, and maximum phase current 35A.",
+    "KERS start threshold defaults to 6 km/h with a configurable 0-10 km/h operating window.",
+    "At 0 km/h threshold, passive motor-off braking stays disabled while lever-based regenerative braking remains available.",
+    "Brake current ramp coefficient defines how quickly braking force is introduced during initial lever input.",
+    "Brake light behavior can be tuned with mode selection and flash-frequency controls.",
   ];
 
   return (
@@ -156,7 +156,7 @@ export default function Home() {
             <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
               <h3 className="text-lg font-semibold text-pink-300">Power limit</h3>
               <p className="mt-2 text-sm text-zinc-300">
-                Standard: 25A / 14A / Auto
+                Baseline profile: 25A / 14A / Auto
               </p>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
                 {powerLimitNotes.map((note) => (
@@ -168,7 +168,7 @@ export default function Home() {
             <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
               <h3 className="text-lg font-semibold text-pink-300">Current limit</h3>
               <p className="mt-2 text-sm text-zinc-300">
-                Standard: 55A / 28A / 16A
+                Baseline profile: 55A / 28A / 16A
               </p>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
                 {currentLimitNotes.map((note) => (
@@ -182,12 +182,12 @@ export default function Home() {
             <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
               <h3 className="text-lg font-semibold text-pink-300">Max speed</h3>
               <p className="mt-2 text-sm text-zinc-300">
-                The scooter stays below configured max speed (add +1 to actually
-                drive at the exact target speed).
+                Speed cap keeps ride velocity below the configured target. Add +1
+                km/h offset when you want exact real-world matching.
               </p>
               <p className="mt-3 text-sm text-zinc-300">
-                With stock battery voltage (36-42V), top speed typically caps
-                near 33 km/h at full charge.
+                On stock 36-42V packs, real top speed usually settles near 33
+                km/h on full charge.
               </p>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
                 {speedProfiles.map((profile) => (
@@ -202,22 +202,23 @@ export default function Home() {
               </h3>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
                 <li>
-                  • Curve type (DPC only): throttle follows a power-based
-                  algorithm similar to thermal engine behavior.
+                  • DPC curve mode shifts throttle logic to a power-weighted map,
+                  closer to engine-style response behavior.
                 </li>
                 <li>
-                  • Warning: speed limit is ignored while DPC is active.
+                  • Safety notice: active DPC can bypass standard speed-limit
+                  enforcement.
                 </li>
                 <li>
-                  • Current raising coefficient controls how quickly current is
-                  applied for speed-based throttle response.
+                  • Current ramp coefficient controls how quickly drive current
+                  is injected during throttle rise.
                 </li>
                 <li>
-                  • Current raising coefficient is ignored while using DPC.
+                  • In DPC mode, this ramp coefficient is not used.
                 </li>
                 <li>
-                  • Motor Start Speed defines the minimum speed in km/h before
-                  motor engagement.
+                  • Motor start threshold defines minimum rolling speed (km/h)
+                  before assisted drive engagement.
                 </li>
               </ul>
             </article>
@@ -233,27 +234,28 @@ export default function Home() {
               <h3 className="text-lg font-semibold text-pink-300">
                 Brake lever params
               </h3>
-              <p className="mt-2 text-sm text-zinc-300">Standard: 120 / 6A / 35A</p>
+              <p className="mt-2 text-sm text-zinc-300">
+                Baseline: 120 / 6A / 35A
+              </p>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
-                <li>• Lever virtual limit: 120</li>
-                <li>• Minimum phase current: 6A</li>
-                <li>• Maximum phase current: 35A</li>
-                <li>• Range handling: Less ↔ More sensitivity bands.</li>
+                <li>• Virtual lever ceiling: 120</li>
+                <li>• Phase current floor: 6A</li>
+                <li>• Phase current ceiling: 35A</li>
+                <li>• Response slider spans softer-to-aggressive sensitivity.</li>
               </ul>
             </article>
 
             <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
               <h3 className="text-lg font-semibold text-pink-300">KERS Min Speed</h3>
               <p className="mt-2 text-sm text-zinc-300">
-                Speed threshold where scooter starts auto-braking while motor is
-                inactive.
+                Sets when passive braking begins while throttle drive is inactive.
               </p>
               <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
-                <li>• Default: 6 km/h</li>
-                <li>• Adjustable range: 0 km/h - 10 km/h</li>
+                <li>• Recommended default: 6 km/h</li>
+                <li>• Adjustable range: 0 km/h to 10 km/h</li>
                 <li>
-                  • 0 km/h profile disables autonomous non-throttle braking,
-                  while brake-lever recuperation remains active.
+                  • At 0 km/h, passive brake engagement is disabled, while lever
+                  recuperation remains active and smooth.
                 </li>
               </ul>
             </article>
