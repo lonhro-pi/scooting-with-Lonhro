@@ -324,6 +324,127 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Lonhro Backend Stack</h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
+            {lonhroArchitecture.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5"
+              >
+                <h3 className="text-lg font-semibold text-pink-300">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-zinc-300">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Field Bridge Control</h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">Native App Features</h3>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                {nativeFieldFeatures.map((feature) => (
+                  <li key={feature}>• {feature}</li>
+                ))}
+              </ul>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setWifiInRange((prev) => !prev)}
+                  className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-200 hover:border-pink-400"
+                >
+                  Wi-Fi Range: {wifiInRange ? "In Range" : "Out of Range"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBridgeOnline((prev) => !prev)}
+                  className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-200 hover:border-pink-400"
+                >
+                  Bridge: {bridgeOnline ? "Online" : "Offline"}
+                </button>
+                <button
+                  type="button"
+                  onClick={runBiometricArm}
+                  className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-500"
+                >
+                  {biometricArmed ? "Disarm (Biometric)" : "Arm with Biometrics"}
+                </button>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={logOfflineSample}
+                  className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-200 hover:border-pink-400"
+                >
+                  Log Offline Sample
+                </button>
+                <button
+                  type="button"
+                  onClick={syncOfflineLogs}
+                  className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-500"
+                >
+                  Sync Offline Logs
+                </button>
+              </div>
+              <p className="mt-3 text-xs text-zinc-400">
+                Local SQLite queue: {offlineSamples} samples • Pending sync: {pendingSync} • Last sync: {lastSyncAt}
+              </p>
+            </article>
+
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">Web Dashboard Intelligence</h3>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                {webDashboardFeatures.map((feature) => (
+                  <li key={feature}>• {feature}</li>
+                ))}
+              </ul>
+              <div className="mt-4 rounded-lg border border-zinc-800 bg-black/30 p-3">
+                <p className="text-sm text-zinc-200">
+                  Fleet Health Alerts: {flaggedBatteries.length} battery
+                  {flaggedBatteries.length === 1 ? "" : "ies"} flagged for elevated sag.
+                </p>
+                <ul className="mt-2 grid gap-1 text-xs text-zinc-400">
+                  {flaggedBatteries.map((battery) => (
+                    <li key={battery.id}>
+                      {battery.id}: sag {battery.sag}, cycles {battery.cycles}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Heartbeat Connectivity Logic</h2>
+          <ul className="mt-4 grid gap-2 text-sm leading-7 text-zinc-300">
+            {heartbeatFeatures.map((feature) => (
+              <li key={feature}>• {feature}</li>
+            ))}
+          </ul>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={sendHeartbeat}
+              className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-500"
+            >
+              Send Heartbeat
+            </button>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                heartbeatStatus === "healthy"
+                  ? "bg-emerald-500/20 text-emerald-300"
+                  : "bg-amber-500/20 text-amber-300"
+              }`}
+            >
+              {heartbeatStatus === "healthy" ? "Link Healthy" : "Heartbeat Warning"}
+            </span>
+            <p className="text-xs text-zinc-400">Last beat: {lastHeartbeat}</p>
+          </div>
+        </section>
+
         <section
           id="live-prototype"
           className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7"
