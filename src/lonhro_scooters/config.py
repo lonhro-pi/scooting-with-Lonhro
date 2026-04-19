@@ -7,23 +7,31 @@ import tomllib
 
 from .exceptions import ConfigError
 
+DEFAULT_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
+DEFAULT_NOTIFY_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+DEFAULT_SOURCE = "app_pc"
+DEFAULT_CONNECT_TIMEOUT = 15.0
+DEFAULT_RESPONSE_TIMEOUT = 5.0
+DEFAULT_CHUNK_SIZE = 20
+DEFAULT_CHALLENGE = "lonhro-unlock-v1"
+
 
 @dataclass(slots=True, frozen=True)
 class BluetoothConfig:
     address: str
     name: str | None = None
-    write_uuid: str = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
-    notify_uuid: str = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
-    source: str = "app_pc"
-    connect_timeout: float = 15.0
-    response_timeout: float = 5.0
-    chunk_size: int = 20
+    write_uuid: str = DEFAULT_WRITE_UUID
+    notify_uuid: str = DEFAULT_NOTIFY_UUID
+    source: str = DEFAULT_SOURCE
+    connect_timeout: float = DEFAULT_CONNECT_TIMEOUT
+    response_timeout: float = DEFAULT_RESPONSE_TIMEOUT
+    chunk_size: int = DEFAULT_CHUNK_SIZE
 
 
 @dataclass(slots=True, frozen=True)
 class SecurityConfig:
     shared_secret: str | None = None
-    challenge: str = "lonhro-unlock-v1"
+    challenge: str = DEFAULT_CHALLENGE
     allowed_fingerprints: tuple[str, ...] = ()
 
 
@@ -94,15 +102,15 @@ def _parse_bluetooth(raw: dict[str, Any]) -> BluetoothConfig:
     address = _expect_str(raw.get("address"), where="[bluetooth].address")
     name_value = raw.get("name")
     name = None if name_value is None else _expect_str(name_value, where="[bluetooth].name")
-    write_uuid = raw.get("write_uuid", BluetoothConfig.write_uuid)
-    notify_uuid = raw.get("notify_uuid", BluetoothConfig.notify_uuid)
-    source = raw.get("source", BluetoothConfig.source)
-    connect_timeout = _as_float(raw.get("connect_timeout", BluetoothConfig.connect_timeout), where="[bluetooth].connect_timeout")
+    write_uuid = raw.get("write_uuid", DEFAULT_WRITE_UUID)
+    notify_uuid = raw.get("notify_uuid", DEFAULT_NOTIFY_UUID)
+    source = raw.get("source", DEFAULT_SOURCE)
+    connect_timeout = _as_float(raw.get("connect_timeout", DEFAULT_CONNECT_TIMEOUT), where="[bluetooth].connect_timeout")
     response_timeout = _as_float(
-        raw.get("response_timeout", BluetoothConfig.response_timeout),
+        raw.get("response_timeout", DEFAULT_RESPONSE_TIMEOUT),
         where="[bluetooth].response_timeout",
     )
-    chunk_size = _as_int(raw.get("chunk_size", BluetoothConfig.chunk_size), where="[bluetooth].chunk_size")
+    chunk_size = _as_int(raw.get("chunk_size", DEFAULT_CHUNK_SIZE), where="[bluetooth].chunk_size")
     if chunk_size <= 0:
         raise ConfigError("[bluetooth].chunk_size must be greater than zero.")
     return BluetoothConfig(
@@ -121,7 +129,7 @@ def _parse_security(raw: dict[str, Any]) -> SecurityConfig:
     shared_secret = raw.get("shared_secret")
     if shared_secret is not None:
         shared_secret = _expect_str(shared_secret, where="[security].shared_secret")
-    challenge = raw.get("challenge", SecurityConfig.challenge)
+    challenge = raw.get("challenge", DEFAULT_CHALLENGE)
     allowed_fingerprints_raw = _expect_list(raw.get("allowed_fingerprints", []), where="[security].allowed_fingerprints")
     allowed_fingerprints = tuple(
         _expect_str(item, where="[security].allowed_fingerprints[]").lower() for item in allowed_fingerprints_raw
