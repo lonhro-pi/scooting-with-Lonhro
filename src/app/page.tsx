@@ -29,20 +29,46 @@ export default function Home() {
     "OVER_VOLTAGE @ 2026-04-15 08:44",
   ]);
   const [thermalOverride, setThermalOverride] = useState(false);
+  const [wifiInRange, setWifiInRange] = useState(false);
+  const [bridgeOnline, setBridgeOnline] = useState(true);
+  const [biometricArmed, setBiometricArmed] = useState(false);
+  const [offlineSamples, setOfflineSamples] = useState(42);
+  const [pendingSync, setPendingSync] = useState(7);
+  const [lastSyncAt, setLastSyncAt] = useState("Not synced yet");
+  const [heartbeatStatus, setHeartbeatStatus] = useState<"healthy" | "warning">("healthy");
+  const [lastHeartbeat, setLastHeartbeat] = useState("00:00:00");
 
   const alreadyPresent = [
     "Encrypted BLE + UART links are already included.",
     "Xiaomi/Ninebot family compatibility is already included.",
     "Raw UART command flow already exists in Command Console.",
+    "Cockpit, Garage, and Terminal split views are already included.",
   ];
 
   const newlyAdded = [
-    "Cross-platform Bluetooth infrastructure plan (flutter_blue_plus + flutter_web_bluetooth).",
-    "Wasm-first web dashboard plan for 60 FPS telemetry widgets.",
-    "Dart VESC UART packet parser layer for voltage, temperature, and RPM decoding.",
-    "Three-view product architecture: Cockpit, Garage, Terminal.",
-    "Seed-based pairing handshake gate before unlock commands can execute.",
-    "Deployment track split: sideloaded Android APK and local/web-hosted dashboard.",
+    "Raspberry Pi MQTT architecture with Mosquitto + InfluxDB + Grafana workflow.",
+    "Native field operations: offline SQLite logging, bridge relay logic, and biometric arming flow.",
+    "Web analytics layer: track heatmaps, discharge curve comparison, and fleet-health screening.",
+    "Heartbeat protocol model for VESC connectivity supervision.",
+    "Implementation path now includes Flutter packages, Docker stack on Pi, and MQTT Python listener.",
+  ];
+
+  const lonhroArchitecture = [
+    {
+      title: "Backend: Raspberry Pi + Mosquitto",
+      detail:
+        "A Raspberry Pi 4B/5 hosts a Mosquitto MQTT broker for lightweight, low-signal telemetry transport across remote routes.",
+    },
+    {
+      title: "Database: InfluxDB Time-Series",
+      detail:
+        "InfluxDB stores high-frequency ride metrics (speed, voltage, motor temperature, current) without degrading query performance.",
+    },
+    {
+      title: "Visualization: Grafana Dashboard",
+      detail:
+        "Grafana provides a high-end browser dashboard for diagnostics graphs, trail replay, and long-range fleet trend analysis.",
+    },
   ];
 
   const coreInfrastructure = [
@@ -80,9 +106,27 @@ export default function Home() {
   ];
 
   const implementationSteps = [
-    "Start with a pure Dart protocol package so parsing and control math are shared by mobile and web.",
-    "Use responsive layout logic: stacked cockpit on phone, expanded multi-graph diagnostics on laptop.",
-    "Ship mobile through sideload APK and web through local Pi or lightweight static hosting.",
+    "Flutter project baseline: one shared codebase using flutter_blue_plus for mobile BLE and mqtt_client for shared messaging.",
+    "Pi deployment path: run Home Assistant or a TIG stack (Telegraf, InfluxDB, Grafana) in Docker containers on Raspberry Pi.",
+    "Handshake service: small Python listener subscribes to Lonhro/Fleet/Update MQTT topic and validates command-state transitions.",
+  ];
+
+  const nativeFieldFeatures = [
+    "Offline SQLite ride logging while out of network coverage, with queued sync on reconnect.",
+    "Bluetooth bridge mode relays VESC telemetry from BLE to MQTT through mobile network when available.",
+    "Biometric arm gate (fingerprint/FaceID) must pass before the scooter can enter active command mode.",
+  ];
+
+  const webDashboardFeatures = [
+    "GPS-linked heatmaps highlight where motor temperature spikes across regional routes.",
+    "Battery analytics compare discharge curves and sag behavior across pack history.",
+    "Fleet health board flags likely imbalance candidates before batteries are deployed.",
+  ];
+
+  const heartbeatFeatures = [
+    "Heartbeat frame every interval confirms controller is alive and data path is healthy.",
+    "Missed heartbeats raise warning state and can block high-risk commands until recovery.",
+    "Heartbeat status is mirrored into MQTT so dashboard and app share the same connectivity truth.",
   ];
 
   const speed = vehicleProfile === "NIU 48V / ATV" ? 41 : 32;
@@ -95,6 +139,11 @@ export default function Home() {
     [seedPaired, terminalInput],
   );
 
+  const flaggedBatteries = useMemo(
+    () => batteryLog.filter((battery) => Number.parseFloat(battery.sag) >= 2.8),
+    [batteryLog],
+  );
+
   const runBatteryCycle = () => {
     setBatteryLog((prev) =>
       prev.map((battery) =>
@@ -103,6 +152,25 @@ export default function Home() {
           : battery,
       ),
     );
+  };
+
+  const logOfflineSample = () => {
+    setOfflineSamples((prev) => prev + 1);
+    setPendingSync((prev) => prev + 1);
+    setTerminalOutput((prev) => [...prev, "OFFLINE_LOGGED: telemetry packet saved to local SQLite queue."]);
+  };
+
+  const syncOfflineLogs = () => {
+    if (!wifiInRange || pendingSync === 0) {
+      return;
+    }
+
+    setTerminalOutput((prev) => [
+      ...prev,
+      `SYNC_OK: ${pendingSync} offline records pushed to Lonhro/Fleet/Update.`,
+    ]);
+    setPendingSync(0);
+    setLastSyncAt(new Date().toLocaleTimeString());
   };
 
   const runSeedHandshake = () => {
@@ -117,6 +185,29 @@ export default function Home() {
 
     setSeedPaired(true);
     setTerminalOutput((prev) => [...prev, "PAIRING_OK: seed handshake verified."]);
+  };
+
+  const runBiometricArm = () => {
+    setBiometricArmed((prev) => !prev);
+    setTerminalOutput((prev) => [
+      ...prev,
+      biometricArmed
+        ? "BIOMETRIC_ARM_OFF: local auth lock re-enabled."
+        : "BIOMETRIC_ARM_ON: local auth verified, controller armed.",
+    ]);
+  };
+
+  const sendHeartbeat = () => {
+    const timestamp = new Date().toLocaleTimeString();
+    setLastHeartbeat(timestamp);
+    if (bridgeOnline) {
+      setHeartbeatStatus("healthy");
+      setTerminalOutput((prev) => [...prev, `HEARTBEAT_OK @ ${timestamp}`]);
+      return;
+    }
+
+    setHeartbeatStatus("warning");
+    setTerminalOutput((prev) => [...prev, `HEARTBEAT_WARN @ ${timestamp}: bridge offline`]);
   };
 
   const sendCommand = () => {
