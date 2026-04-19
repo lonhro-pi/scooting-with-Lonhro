@@ -453,6 +453,27 @@ export default function Home() {
           </ol>
         </section>
 
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">Seed-Based Pairing Gate</h2>
+          <ul className="mt-4 grid gap-3 text-sm leading-7 text-zinc-300">
+            <li>
+              <span className="mr-2 text-pink-300">•</span>
+              Unlock-path commands remain hard-blocked until a seed challenge
+              handshake succeeds between controller and app.
+            </li>
+            <li>
+              <span className="mr-2 text-pink-300">•</span>
+              Session seeds rotate per connection, reducing replay-risk against
+              high-impact commands.
+            </li>
+            <li>
+              <span className="mr-2 text-pink-300">•</span>
+              Terminal and automation layers both route through the same pairing
+              gate before dispatch.
+            </li>
+          </ul>
+        </section>
+
         <section
           id="launch"
           className="mt-14 rounded-2xl border border-pink-400/30 bg-zinc-900 p-7 md:flex md:items-center md:justify-between"
