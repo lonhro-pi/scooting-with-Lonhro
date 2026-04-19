@@ -14,6 +14,16 @@ export default function Home() {
     },
   ];
 
+  const controlFeatures = [
+    "Change Region: change serial number for the connected vehicle.",
+    "Commands: act on registers to enable KERS, DPC, lock, reboot, and more.",
+    "Automate: send a user-specified command on connection (for example, DPC register activation).",
+    "Lock: keep scooter in always-on mode while ebrake is applied to discourage theft.",
+    "Cruise Control: activate time-delayed cruise control when firmware permits it.",
+    "Direct power control (DPC): activate DPC register mode for switchable register or switchable brake firmware options.",
+    "Always on tail light: force the tail light to remain ON.",
+  ];
+
   return (
     <div className="flex flex-1 justify-center px-6 py-10 md:px-10 md:py-14">
       <main className="w-full max-w-6xl rounded-3xl border border-pink-400/20 bg-zinc-950/95 p-8 text-zinc-100 shadow-[0_35px_90px_rgba(236,72,153,0.18)] backdrop-blur md:p-12">
@@ -96,6 +106,17 @@ export default function Home() {
               • Built for Xiaomi-Ninebot platforms: Max, SNSC, ESx, M365,
               M365 Pro.
             </li>
+          </ul>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">
+            Register and Control Commands
+          </h2>
+          <ul className="mt-4 grid gap-3 text-sm leading-7 text-zinc-300">
+            {controlFeatures.map((feature) => (
+              <li key={feature}>• {feature}</li>
+            ))}
           </ul>
         </section>
 
