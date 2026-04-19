@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.29.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lonhro-scooters"
+version = "0.1.0"
+description = "Config-driven BLE client for Ninebot-style scooters with authenticated command profiles and a host-gated immobilizer flow."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+  { name = "lonhro-pi" }
+]
+dependencies = [
+  "bleak>=3.0.1",
+  "miauth>=0.9.7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0.3",
+]
+
+[project.scripts]
+lonhro-scooters = "lonhro_scooters.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lonhro_scooters"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

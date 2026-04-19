@@ -1,0 +1,70 @@
+[bluetooth]
+# Replace with your scooter BLE address. Set `name` if scan cannot resolve it.
+address = "00:00:00:00:00:00"
+name = "SCOOTER-BT-NAME"
+write_uuid = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
+notify_uuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+source = "app_pc"
+connect_timeout = 15.0
+response_timeout = 5.0
+chunk_size = 20
+
+[security]
+# Used to generate/verify the unlock signature.
+shared_secret = "replace-with-a-long-random-secret"
+challenge = "lonhro-unlock-v1"
+
+# Add the fingerprint from `lonhro-scooters -c examples/scooter.example.toml fingerprint`
+# to restrict unlock-capable profiles to a single Linux box or phone companion host.
+allowed_fingerprints = [
+  "replace-with-your-host-fingerprint",
+]
+
+[profiles.startup_lock]
+description = "Send the lock flag during startup so the scooter stays immobilized."
+requires_signature = false
+steps = [
+  { action = "set_lock_flag", target = "display", index = 0x70, command = "write_no_reply", locked = true, byte_width = 1 },
+]
+
+[profiles.lonhro_unlock_42]
+description = "Verify the host signature, clear the lock flag, switch to sport mode, and apply a 42 km/h profile."
+requires_signature = true
+steps = [
+  { action = "send_signature", target = "display", index = 0xF0, command = "write_no_reply", format = "ascii" },
+  { action = "set_lock_flag", target = "display", index = 0x70, command = "write_no_reply", locked = false, byte_width = 1 },
+  { action = "set_mode", target = "esc_control", index = 0x75, command = "write_no_reply", mode = "sport" },
+  { action = "set_speed_limit", target = "esc_control", index = 0x72, command = "write_no_reply", kmh = 42.0 },
+]
+
+[profiles.read_ble_fw]
+description = "Read the BLE firmware register for quick smoke tests."
+requires_signature = false
+steps = [
+  { action = "read_register", target = "esc_control", index = 0x68, length = 2 },
+]
+
+# Region / SHFW / field-weakening commands vary by scooter family, DRV, and firmware.
+# The app is already wired for them through `send_packet`/`write_register` profiles.
+# Copy one of the templates below into a real profile after you confirm the exact bytes.
+#
+# [profiles.region_change_template]
+# description = "Model-specific region change packet."
+# requires_signature = true
+# steps = [
+#   { action = "send_packet", target = "esc_control", command = "write_no_reply", index = 0x00, data_hex = "..." },
+# ]
+#
+# [profiles.shfw_template]
+# description = "Model-specific SHFW control packet."
+# requires_signature = true
+# steps = [
+#   { action = "send_packet", target = "esc_control", command = "write_no_reply", index = 0x00, data_hex = "..." },
+# ]
+#
+# [profiles.field_weakening_template]
+# description = "Model-specific field weakening packet."
+# requires_signature = true
+# steps = [
+#   { action = "send_packet", target = "esc_control", command = "write_no_reply", index = 0x00, data_hex = "..." },
+# ]
