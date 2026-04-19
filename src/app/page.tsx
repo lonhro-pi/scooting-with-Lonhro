@@ -46,6 +46,14 @@ export default function Home() {
     "DE region - Sports / EU region - Drive 22 km/h",
   ];
 
+  const brakeNotes = [
+    "Brake lever params standard: Lever virtual limit 120, minimum phase current 6A, maximum phase current 35A.",
+    "KERS Min Speed default: 6 km/h (configurable range 0-10 km/h).",
+    "When set to 0 km/h, scooter does not auto-brake while motor is inactive; brake lever recuperation remains available (clonk-free).",
+    "Current raising coefficient controls how quickly brake current is applied and affects brake response ramp.",
+    "Brake light mode and brake light flash frequency are configurable behavior outputs.",
+  ];
+
   return (
     <div className="flex flex-1 justify-center px-6 py-10 md:px-10 md:py-14">
       <main className="w-full max-w-6xl rounded-3xl border border-pink-400/20 bg-zinc-950/95 p-8 text-zinc-100 shadow-[0_35px_90px_rgba(236,72,153,0.18)] backdrop-blur md:p-12">
@@ -214,6 +222,53 @@ export default function Home() {
               </ul>
             </article>
           </div>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-pink-400/25 bg-zinc-900/70 p-7">
+          <h2 className="text-2xl font-bold text-white">
+            Brake and KERS Tuning
+          </h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">
+                Brake lever params
+              </h3>
+              <p className="mt-2 text-sm text-zinc-300">Standard: 120 / 6A / 35A</p>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                <li>• Lever virtual limit: 120</li>
+                <li>• Minimum phase current: 6A</li>
+                <li>• Maximum phase current: 35A</li>
+                <li>• Range handling: Less ↔ More sensitivity bands.</li>
+              </ul>
+            </article>
+
+            <article className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <h3 className="text-lg font-semibold text-pink-300">KERS Min Speed</h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                Speed threshold where scooter starts auto-braking while motor is
+                inactive.
+              </p>
+              <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+                <li>• Default: 6 km/h</li>
+                <li>• Adjustable range: 0 km/h - 10 km/h</li>
+                <li>
+                  • 0 km/h profile disables autonomous non-throttle braking,
+                  while brake-lever recuperation remains active.
+                </li>
+              </ul>
+            </article>
+          </div>
+
+          <article className="mt-5 rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+            <h3 className="text-lg font-semibold text-pink-300">
+              Brake response and lighting
+            </h3>
+            <ul className="mt-3 grid gap-2 text-sm leading-7 text-zinc-300">
+              {brakeNotes.map((note) => (
+                <li key={note}>• {note}</li>
+              ))}
+            </ul>
+          </article>
         </section>
 
         <section
