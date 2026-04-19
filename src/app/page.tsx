@@ -66,7 +66,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
         </section>
 
         <section id="features" className="mt-14 grid gap-5 md:grid-cols-3">
