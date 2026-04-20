@@ -714,8 +714,8 @@ export default function Home() {
                     : "Unlock commands remain blocked until pairing is verified."}
                 </p>
                 <div className="mt-3 max-h-48 overflow-auto rounded-lg bg-black/50 p-3 text-xs text-zinc-200">
-                  {terminalOutput.map((line) => (
-                    <p key={line}>{line}</p>
+                  {terminalOutput.map((line, index) => (
+                    <p key={`${line}-${index}`}>{line}</p>
                   ))}
                 </div>
               </article>
