@@ -1,203 +1,97 @@
-# Lonhro Scooters
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Config-driven Python BLE app scaffold for Ninebot-style scooters that:
+## Getting Started
 
-- authenticates over the encrypted BLE UART flow used by newer firmware,
-- executes configurable register/packet profiles,
-- supports a host-gated "digital immobilizer" unlock flow,
-- keeps risky model-specific tuning packets in config instead of hardcoding them.
-
-This repository starts from the same general BLE/auth approach used by the public `ninebot-ble` client and wraps it in a cleaner CLI + profile system for custom scooter control workflows.
-
-## What the app does
-
-- Scan for nearby BLE devices
-- Connect to a scooter using `bleak`
-- Perform the encrypted Ninebot auth handshake with `miauth`
-- Persist the BLE app key for reconnects
-- Execute profiles defined in TOML
-- Gate selected profiles behind a host fingerprint + HMAC signature
-
-## Important note on tuning actions
-
-Scooter commands for region changes, SHFW-related settings, field weakening, and other tuning features vary by model, firmware, and board layout. The app therefore treats those as **configurable packet steps** rather than pretending there is one universal packet for every scooter.
-
-Built-in helpers are included for common patterns like:
-
-- setting a lock flag,
-- setting a speed limit register,
-- changing mode,
-- sending a signature/unlock payload,
-- reading registers,
-- sending raw packets.
-
-You can extend profiles with explicit packet steps once you confirm the exact bytes for your scooter.
-
-## Install
+First, run the development server:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .[dev]
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## Quick start
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### 1. Copy and edit the config
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```bash
-cp examples/scooter.example.toml scooter.toml
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Edit:
+## Learn More
 
-- `bluetooth.address`
-- optionally `bluetooth.name`
-- `security.shared_secret`
-- `security.allowed_fingerprints`
-- any model-specific packet indices/targets you need
+To learn more about Next.js, take a look at the following resources:
 
-### 2. Discover devices
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```bash
-lonhro-scooters scan
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### 3. Get the local host fingerprint
+## Deploy on Vercel
 
-```bash
-lonhro-scooters -c scooter.toml fingerprint
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Put that fingerprint into `security.allowed_fingerprints` if you want to restrict unlock-capable profiles to your approved machine.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-### 4. Generate a proof for the current machine
+## Phase 1 Link Stack (Lonhro)
 
-```bash
-lonhro-scooters -c scooter.toml proof
-```
+Phase 1 adds a real backend integration path for telemetry:
 
-### 5. List profiles
+- Mosquitto (MQTT broker)
+- InfluxDB (time-series storage)
+- Grafana (dashboard visualization)
+- Python bridge (`services/bridge_listener.py`) to ingest MQTT payloads and write to InfluxDB
 
-```bash
-lonhro-scooters -c scooter.toml profiles
-```
+### Files added
 
-### 6. Run a startup immobilizer profile
+- `infra/docker-compose.phase1.yml`
+- `infra/mosquitto/mosquitto.conf`
+- `services/bridge_listener.py`
+- `services/.env.example`
+- `scripts/publish_sample_telemetry.py`
+- `scripts/mock_bridge_e2e_test.py`
 
-```bash
-lonhro-scooters -c scooter.toml run-profile startup_lock
-```
+### 1) Run on Raspberry Pi (Docker)
 
-### 7. Run the signature-gated unlock profile
+From repo root:
 
-```bash
-lonhro-scooters -c scooter.toml run-profile lonhro_unlock_42
-```
+1. Create MQTT password file from example:
+   - Copy `infra/mosquitto/passwords.example` to `infra/mosquitto/passwords`
+   - Replace credentials with secure values
+2. Start stack:
+   - `docker compose -f infra/docker-compose.phase1.yml up -d`
+3. Verify services:
+   - `docker compose -f infra/docker-compose.phase1.yml ps`
 
-If the profile requires a signature and `security.shared_secret` is configured, the CLI can auto-sign for the current approved host. You can also provide a signature manually:
+### 2) Configure bridge listener
 
-```bash
-lonhro-scooters -c scooter.toml run-profile lonhro_unlock_42 \
-  --fingerprint <approved-fingerprint> \
-  --signature <hex-signature> \
-  --no-auto-signature
-```
+1. Copy `services/.env.example` to `services/.env`
+2. Set:
+   - MQTT broker host/user/pass
+   - InfluxDB URL/token/org/bucket
+3. Install dependencies:
+   - `python3 -m pip install -r services/requirements.txt`
+4. Run bridge:
+   - `python3 services/bridge_listener.py`
 
-## CLI
+### 3) Publish sample telemetry
 
-```bash
-lonhro-scooters --help
-```
+Use:
 
-Commands:
+- `python3 scripts/publish_sample_telemetry.py`
 
-- `scan`
-- `profiles`
-- `fingerprint`
-- `proof`
-- `run-profile <name>`
-- `send-raw`
-- `read-register`
+This sends structured payloads to `Lonhro/Fleet/Update`.
 
-## Config format
+### 4) Local no-docker harness (cloud VM safe)
 
-The app uses TOML.
+If Docker/Mosquitto/InfluxDB are unavailable in your environment, validate parser + ingest transform logic with:
 
-### Bluetooth section
+- `python3 scripts/mock_bridge_e2e_test.py`
 
-```toml
-[bluetooth]
-address = "AA:BB:CC:DD:EE:FF"
-name = "SCOOTER_NAME"
-write_uuid = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
-notify_uuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
-source = "app_pc"
-```
-
-### Security section
-
-```toml
-[security]
-shared_secret = "replace-me"
-challenge = "lonhro-unlock-v1"
-allowed_fingerprints = ["<fingerprint>"]
-```
-
-### Profile steps
-
-Each profile is an ordered set of steps:
-
-- `sleep`
-- `read_register`
-- `set_speed_limit`
-- `set_mode`
-- `set_lock_flag`
-- `send_signature`
-- `send_packet`
-- `write_register`
-
-Example raw packet step:
-
-```toml
-[[profiles.custom.steps]]
-action = "send_packet"
-target = "display"
-command = "write_no_reply"
-index = 0x70
-data_hex = "01"
-```
-
-## Digital immobilizer flow
-
-The included example config models your requested flow like this:
-
-1. `startup_lock` writes a lock flag during startup
-2. `lonhro_unlock_42` is marked `requires_signature = true`
-3. That profile first sends a signature payload
-4. Then it disables the lock flag
-5. Then it switches to sport mode
-6. Then it applies a higher speed-limit register value
-
-The example signature payload is **host-side gating plus an app-side unlock marker**. It gives you a clean place to enforce "this machine is allowed to send the unlock profile" before the scooter-control steps are executed.
-
-If your scooter firmware expects a different unlock packet shape, adjust the `send_signature` step in config.
-
-## Development
-
-Run tests:
-
-```bash
-pytest
-```
-
-## Project status
-
-This is a strong scaffold for a custom Linux scooter app:
-
-- BLE auth/session handling is implemented
-- packet/profile engine is implemented
-- signature gating is implemented
-- example profiles are included
-
-The remaining scooter-specific work is confirming the exact tuning/register packets for your hardware and firmware revision.
+This verifies:
+- payload validation
+- line protocol generation
+- fault extraction
+- command-topic routing rules
